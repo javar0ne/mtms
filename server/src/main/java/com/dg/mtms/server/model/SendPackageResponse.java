@@ -1,4 +1,4 @@
-package server.model;
+package com.dg.mtms.server.model;
 
 public class SendPackageResponse {
 

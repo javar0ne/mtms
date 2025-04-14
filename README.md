@@ -1,7 +1,7 @@
 # mtms
 
 ## Traccia
-Si vuole implementare un sistema Client-server.Server, con server.Server concorrente, che simuli un servizio postale, dove i clienti possono effettuare queste operazioni:
+Si vuole implementare un sistema Client-Server, con Server concorrente, che simuli un servizio postale, dove i clienti possono effettuare queste operazioni:
 1. Invio pacco: il cliente può inviare un pacco, specificando il destinatario, l’indirizzo e il peso.
 2. Traccia spedizione: il cliente, inserendo un numero di tracciamento, può controllare lo stato della spedizione.
 3. Calcolo tariffa: il cliente può inserire il peso e le dimensioni del pacco per ottenere una stima della tariffa di spedizione.
