@@ -1,13 +1,17 @@
 package com.dg.mtms.server;
 
+import com.dg.mtms.server.annnotation.Controller;
 import com.dg.mtms.server.controller.MailController;
 import com.dg.mtms.server.dispatcher.RequestDispatcher;
 import com.dg.mtms.server.repository.MailRepository;
 import com.dg.mtms.server.service.MailService;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -19,7 +23,7 @@ public class ServerApplication {
     public static void main(String[] args) {
         try {
             initSingletons();
-            validateAndPopulateControllers();
+            validateAndPopulateControllers(ServerApplication.class.getPackage().getName());
             runServer();
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -32,11 +36,30 @@ public class ServerApplication {
         MailController.createInstance(MailService.getInstance());
     }
 
-    private static void validateAndPopulateControllers() {
-        // scan all controllers
-        // check if basePath is present for 2 controllers: throw an exception if it's the case
-        // create a map with class references
-        controllers.put("/mail", MailController.class);
+    private static void validateAndPopulateControllers(String packageName){
+        try{
+            String path = packageName.replace(".","/");
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            URL resource = classLoader.getResource(path);
+            File directory = new File(resource.toURI());
+            for (File file : directory.listFiles()) {
+                if (file.getName().endsWith(".class")) {
+                    String className = packageName + "." + file.getName().replace(".class", "");
+                    Class<?> clazz = Class.forName(className);
+                    if (clazz.isAnnotationPresent(Controller.class)) {
+                        String basePath = clazz.getDeclaredAnnotation(Controller.class).basePath();
+                        if(controllers.containsKey(basePath)) {
+                            throw new RuntimeException(basePath + " has already been found");
+                        }
+                        controllers.put(basePath, clazz);
+                    }
+                } else {
+                    validateAndPopulateControllers(packageName+"."+file.getName());
+                }
+            }
+        } catch (URISyntaxException | ClassNotFoundException e){
+            System.err.println(e.getMessage());
+        }
     }
 
     private static void runServer() {

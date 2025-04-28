@@ -3,6 +3,8 @@ package com.dg.mtms.server.dispatcher;
 import com.dg.mtms.server.Singleton;
 import com.dg.mtms.server.annnotation.Request;
 import com.dg.mtms.server.enums.HttpMethod;
+import com.dg.mtms.server.model.request.HttpRequest;
+import com.dg.mtms.server.util.HttpParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,24 +29,22 @@ public class RequestDispatcher implements Runnable {
     public void run() {
         try {
             BufferedReader socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String firstLine = socketReader.readLine();
-            String[] request = firstLine.split(" ");
-            String httpMethod = request[0];
-            String fullEndpointPath = request[1];
+            HttpParser parser = new HttpParser();
+            HttpRequest httpRequestParsed = parser.parse(socketReader);
 
-            if(!HttpMethod.isValid(httpMethod)) {
-                throw new IllegalStateException("Unknown HTTP method: " + httpMethod);
+            if(!HttpMethod.isValid(httpRequestParsed.getMethod())) {
+                throw new IllegalStateException("Unknown HTTP method: " + httpRequestParsed.getMethod());
             }
 
             Optional<String> controllerBasePath = controllers.keySet()
                 .stream()
-                .filter(fullEndpointPath::startsWith)
+                .filter(httpRequestParsed.getEndpoint()::startsWith)
                 .findFirst();
             if(controllerBasePath.isEmpty()) {
-                throw new IllegalStateException("No controller found for " + fullEndpointPath);
+                throw new IllegalStateException("No controller found for " + httpRequestParsed.getEndpoint());
             }
 
-            String endpointPath = fullEndpointPath.substring(controllerBasePath.get().length());
+            String endpointPath = httpRequestParsed.getEndpoint().substring(controllerBasePath.get().length());
             Optional<Method> matchedMethod = Arrays.stream(controllers.get(controllerBasePath.get()).getMethods())
                 .filter(m ->
                     m.isAnnotationPresent(Request.class) &&
@@ -53,7 +53,7 @@ public class RequestDispatcher implements Runnable {
                         .equals(endpointPath) &&
                     m.getDeclaredAnnotation(Request.class)
                         .method()
-                        .equals(httpMethod)
+                        .equals(httpRequestParsed.getMethod())
                 )
                 .findFirst();
 
