@@ -1,15 +1,21 @@
 package com.dg.mtms.server.model.request;
 
+import com.dg.mtms.server.enums.HttpMethod;
+
 import java.util.HashMap;
 
 public class HttpRequest {
-    private String method;
+    private HttpMethod method;
     private String endpoint;
     private String version;
     private HashMap<String, String> headers = new HashMap<>();
     private String body;
 
-    public void setMethod(String method) {
+    public HttpMethod getMethod() {
+        return method;
+    }
+
+    public void setMethod(HttpMethod method) {
         this.method = method;
     }
 
@@ -19,6 +25,10 @@ public class HttpRequest {
 
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
+    }
+
+    public String getVersion() {
+        return version;
     }
 
     public void setVersion(String version) {
@@ -33,8 +43,8 @@ public class HttpRequest {
         this.headers = headers;
     }
 
-    public String getMethod() {
-        return method;
+    public String getBody() {
+        return body;
     }
 
     public void setBody(String body) {

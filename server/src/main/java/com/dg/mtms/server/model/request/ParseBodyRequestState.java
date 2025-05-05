@@ -1,9 +1,14 @@
 package com.dg.mtms.server.model.request;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
 public class ParseBodyRequestState implements RequestState {
+    private static final Logger logger = LoggerFactory.getLogger(ParseBodyRequestState.class);
+
     @Override
     public RequestState handle(BufferedReader reader, HttpRequest httpRequest) {
         try {
@@ -19,7 +24,7 @@ public class ParseBodyRequestState implements RequestState {
             }
             httpRequest.setBody(new String(bodyChars));
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            logger.error("Error while parsing body!", e);
         }
         return new DoneRequestState();
     }

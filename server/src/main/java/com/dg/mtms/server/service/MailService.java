@@ -1,6 +1,5 @@
 package com.dg.mtms.server.service;
 
-
 import com.dg.mtms.server.Singleton;
 import com.dg.mtms.server.repository.MailRepository;
 

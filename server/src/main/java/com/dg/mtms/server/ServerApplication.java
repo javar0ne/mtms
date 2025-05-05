@@ -5,6 +5,8 @@ import com.dg.mtms.server.controller.MailController;
 import com.dg.mtms.server.dispatcher.RequestDispatcher;
 import com.dg.mtms.server.repository.MailRepository;
 import com.dg.mtms.server.service.MailService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ServerApplication {
+    private static final Logger logger = LoggerFactory.getLogger(ServerApplication.class);
     private static final Map<String, Class<?>> controllers = new HashMap<>();
 
     public static void main(String[] args) {
@@ -26,7 +29,7 @@ public class ServerApplication {
             validateAndPopulateControllers(ServerApplication.class.getPackage().getName());
             runServer();
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            logger.error("Error while initializing server!", e);
         }
     }
 
@@ -36,29 +39,38 @@ public class ServerApplication {
         MailController.createInstance(MailService.getInstance());
     }
 
-    private static void validateAndPopulateControllers(String packageName){
-        try{
+    private static void validateAndPopulateControllers(String packageName) {
+        try {
             String path = packageName.replace(".","/");
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             URL resource = classLoader.getResource(path);
-            File directory = new File(resource.toURI());
-            for (File file : directory.listFiles()) {
+            File directory;
+            File[] files;
+
+            if(resource == null) return;
+
+            directory = new File(resource.toURI());
+            files = directory.listFiles();
+
+            if(files == null) return;
+
+            for (File file : files) {
                 if (file.getName().endsWith(".class")) {
                     String className = packageName + "." + file.getName().replace(".class", "");
                     Class<?> clazz = Class.forName(className);
                     if (clazz.isAnnotationPresent(Controller.class)) {
                         String basePath = clazz.getDeclaredAnnotation(Controller.class).basePath();
                         if(controllers.containsKey(basePath)) {
-                            throw new RuntimeException(basePath + " has already been found");
+                            throw new RuntimeException(basePath + " has been declared twice!");
                         }
                         controllers.put(basePath, clazz);
                     }
                 } else {
-                    validateAndPopulateControllers(packageName+"."+file.getName());
+                    validateAndPopulateControllers(packageName + "." + file.getName());
                 }
             }
-        } catch (URISyntaxException | ClassNotFoundException e){
-            System.err.println(e.getMessage());
+        } catch (URISyntaxException | ClassNotFoundException e) {
+            logger.error("Error while validating and populating controllers!", e);
         }
     }
 
@@ -67,9 +79,10 @@ public class ServerApplication {
             ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
             ServerSocket serverSocket = new ServerSocket(8080)
         ) {
-            System.out.println("Server started");
+            logger.info("Server started!");
+            //noinspection InfiniteLoopStatement
             while(true) {
-                System.out.println("Waiting for client connection");
+                logger.info("Waiting for client connection..");
                 Socket socket = serverSocket.accept();
                 executorService.submit(new RequestDispatcher(controllers, socket));
             }

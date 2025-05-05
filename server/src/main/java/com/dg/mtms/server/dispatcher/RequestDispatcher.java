@@ -2,13 +2,16 @@ package com.dg.mtms.server.dispatcher;
 
 import com.dg.mtms.server.Singleton;
 import com.dg.mtms.server.annnotation.Request;
-import com.dg.mtms.server.enums.HttpMethod;
 import com.dg.mtms.server.model.request.HttpRequest;
+import com.dg.mtms.server.model.response.HttpResponse;
 import com.dg.mtms.server.util.HttpParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Socket;
@@ -16,7 +19,10 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.dg.mtms.server.enums.HttpMethod.POST;
+
 public class RequestDispatcher implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(RequestDispatcher.class);
     private final Map<String, Class<?>> controllers;
     private final Socket socket;
 
@@ -27,24 +33,23 @@ public class RequestDispatcher implements Runnable {
 
     @Override
     public void run() {
-        try {
+        try (
             BufferedReader socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter socketWriter = new PrintWriter(socket.getOutputStream(), true);
+        ) {
             HttpParser parser = new HttpParser();
-            HttpRequest httpRequestParsed = parser.parse(socketReader);
-
-            if(!HttpMethod.isValid(httpRequestParsed.getMethod())) {
-                throw new IllegalStateException("Unknown HTTP method: " + httpRequestParsed.getMethod());
-            }
+            HttpRequest httpRequest = parser.parse(socketReader);
 
             Optional<String> controllerBasePath = controllers.keySet()
                 .stream()
-                .filter(httpRequestParsed.getEndpoint()::startsWith)
+                .filter(httpRequest.getEndpoint()::startsWith)
                 .findFirst();
             if(controllerBasePath.isEmpty()) {
-                throw new IllegalStateException("No controller found for " + httpRequestParsed.getEndpoint());
+                socketWriter.write(HttpResponse.notFound().toString());
+                throw new IllegalStateException("No controller found for " + httpRequest.getEndpoint());
             }
 
-            String endpointPath = httpRequestParsed.getEndpoint().substring(controllerBasePath.get().length());
+            String endpointPath = httpRequest.getEndpoint().substring(controllerBasePath.get().length());
             Optional<Method> matchedMethod = Arrays.stream(controllers.get(controllerBasePath.get()).getMethods())
                 .filter(m ->
                     m.isAnnotationPresent(Request.class) &&
@@ -53,17 +58,25 @@ public class RequestDispatcher implements Runnable {
                         .equals(endpointPath) &&
                     m.getDeclaredAnnotation(Request.class)
                         .method()
-                        .equals(httpRequestParsed.getMethod())
+                        .equals(httpRequest.getMethod().name())
                 )
                 .findFirst();
 
             if(matchedMethod.isEmpty()) {
+                socketWriter.write(HttpResponse.notFound().toString());
                 throw new IllegalStateException("Endpoint not found");
             }
 
             matchedMethod.get().invoke(Singleton.getInstance(controllers.get(controllerBasePath.get())));
-        } catch (IOException | InvocationTargetException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            socketWriter.write(HttpResponse.ok().toString());
+        } catch (IOException | InvocationTargetException | IllegalAccessException | IllegalStateException e) {
+            logger.error("Error while dispatching request!", e);
+        } finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                logger.error("Error while closing socket!", e);
+            }
         }
     }
 }

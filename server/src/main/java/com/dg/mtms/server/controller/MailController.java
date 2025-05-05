@@ -3,11 +3,13 @@ package com.dg.mtms.server.controller;
 import com.dg.mtms.server.Singleton;
 import com.dg.mtms.server.annnotation.Controller;
 import com.dg.mtms.server.annnotation.Request;
-import com.dg.mtms.server.model.SendPackageRequest;
 import com.dg.mtms.server.service.MailService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller(basePath = "/mail")
 public class MailController extends Singleton<MailController> {
+    private final static Logger logger = LoggerFactory.getLogger(MailController.class);
     private final MailService mailService;
 
     private MailController(MailService mailService) {
@@ -24,7 +26,6 @@ public class MailController extends Singleton<MailController> {
 
     @Request(endpoint = "/send-package", method = "POST")
     public void sendPackage() {
-
-        System.out.println("Sending package to server");
+        logger.info("Sending package to server");
     }
 }
