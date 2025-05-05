@@ -58,3 +58,6 @@ Desktop.ini
 
 # Generated files
 generated/
+
+# Exclude local dbs
+*.db

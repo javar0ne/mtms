@@ -5,6 +5,7 @@ import com.dg.mtms.server.annnotation.Request;
 import com.dg.mtms.server.model.request.HttpRequest;
 import com.dg.mtms.server.model.response.HttpResponse;
 import com.dg.mtms.server.util.HttpParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,23 +20,23 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.dg.mtms.server.enums.HttpMethod.POST;
-
 public class RequestDispatcher implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestDispatcher.class);
     private final Map<String, Class<?>> controllers;
     private final Socket socket;
+    private final ObjectMapper objectMapper;
 
     public RequestDispatcher(Map<String, Class<?>> controllers, Socket socket) {
         this.controllers = controllers;
         this.socket = socket;
+        this.objectMapper = new ObjectMapper();
     }
 
     @Override
     public void run() {
         try (
             BufferedReader socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter socketWriter = new PrintWriter(socket.getOutputStream(), true);
+            PrintWriter socketWriter = new PrintWriter(socket.getOutputStream(), true)
         ) {
             HttpParser parser = new HttpParser();
             HttpRequest httpRequest = parser.parse(socketReader);
@@ -55,7 +56,7 @@ public class RequestDispatcher implements Runnable {
                     m.isAnnotationPresent(Request.class) &&
                     m.getDeclaredAnnotation(Request.class)
                         .endpoint()
-                        .equals(endpointPath) &&
+                        .startsWith(endpointPath) &&
                     m.getDeclaredAnnotation(Request.class)
                         .method()
                         .equals(httpRequest.getMethod().name())
@@ -67,8 +68,13 @@ public class RequestDispatcher implements Runnable {
                 throw new IllegalStateException("Endpoint not found");
             }
 
-            matchedMethod.get().invoke(Singleton.getInstance(controllers.get(controllerBasePath.get())));
-            socketWriter.write(HttpResponse.ok().toString());
+
+
+            HttpResponse response = (HttpResponse) matchedMethod.get().invoke(
+                Singleton.getInstance(controllers.get(controllerBasePath.get())),
+                objectMapper.readValue(httpRequest.getBody(), matchedMethod.get().getParameterTypes()[0])
+            );
+            socketWriter.write(response.toString());
         } catch (IOException | InvocationTargetException | IllegalAccessException | IllegalStateException e) {
             logger.error("Error while dispatching request!", e);
         } finally {

@@ -23,6 +23,9 @@
         <jackson-databind.version>2.18.3</jackson-databind.version>
         <slf4j-api.version>2.0.17</slf4j-api.version>
         <logback-classic.version>1.5.18</logback-classic.version>
+        <sqlite-jdbc.version>3.47.2.0</sqlite-jdbc.version>
+        <liquibase.version>4.30.0</liquibase.version>
+        <org.mapstruct.version>1.6.3</org.mapstruct.version>
     </properties>
 
     <dependencyManagement>
@@ -42,6 +45,21 @@
                 <artifactId>logback-classic</artifactId>
                 <version>${logback-classic.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.xerial</groupId>
+                <artifactId>sqlite-jdbc</artifactId>
+                <version>${sqlite-jdbc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-core</artifactId>
+                <version>${liquibase.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${org.mapstruct.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -55,6 +73,13 @@
                     <configuration>
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${org.mapstruct.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
                     </configuration>
                 </plugin>
 
@@ -69,6 +94,20 @@
                             </manifest>
                         </archive>
                     </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.liquibase</groupId>
+                    <artifactId>liquibase-maven-plugin</artifactId>
+                    <version>${liquibase.version}</version>
+                    <executions>
+                        <execution>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>update</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

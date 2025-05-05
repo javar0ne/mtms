@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS shipping_fee (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    dim_min DOUBLE NOT NULL,
+    dim_max DOUBLE NOT NULL,
+    weight_min DOUBLE NOT NULL,
+    weight_max DOUBLE NOT NULL,
+    fee DOUBLE NOT NULL
+);
