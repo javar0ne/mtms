@@ -37,4 +37,14 @@ public class SendMailPackageRequest {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+
+    @Override
+    public String toString() {
+        return "SendMailPackageRequest{" +
+            "receiver='" + receiver + '\'' +
+            ", address='" + address + '\'' +
+            ", weight=" + weight +
+            ", userId=" + userId +
+            '}';
+    }
 }

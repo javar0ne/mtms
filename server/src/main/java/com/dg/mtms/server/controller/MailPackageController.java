@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 
 @Controller(basePath = "/mail")
 public class MailPackageController extends Singleton<MailPackageController> {
+    private static final Logger logger = LoggerFactory.getLogger(MailPackageController.class);
+
     private final MailPackageService mailPackageService;
     private final ObjectMapper objectMapper;
 
@@ -36,8 +38,10 @@ public class MailPackageController extends Singleton<MailPackageController> {
     // TODO: handle exception throwing in controller
     @Request(endpoint = "/send-package", method = "POST")
     public HttpResponse sendPackage(@RequestBody SendMailPackageRequest sendMailPackageRequest) throws JsonProcessingException {
+        logger.info("sending package: {}", sendMailPackageRequest);
         MailPackage mailPackage = mailPackageService.sendPackage(MailPackageMapper.INSTANCE.toMailPackage(sendMailPackageRequest));
         SendMailPackageResponse response = MailPackageMapper.INSTANCE.toSendMailPackageResponse(mailPackage);
+        logger.info("sent package. id: {}", response.getId());
         return HttpResponse.ok(objectMapper.writeValueAsString(response));
     }
 }

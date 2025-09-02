@@ -68,14 +68,12 @@ public class RequestDispatcher implements Runnable {
                 throw new IllegalStateException("Endpoint not found");
             }
 
-
-
             HttpResponse response = (HttpResponse) matchedMethod.get().invoke(
                 Singleton.getInstance(controllers.get(controllerBasePath.get())),
                 objectMapper.readValue(httpRequest.getBody(), matchedMethod.get().getParameterTypes()[0])
             );
             socketWriter.write(response.toString());
-        } catch (IOException | InvocationTargetException | IllegalAccessException | IllegalStateException e) {
+        } catch (Exception e) {
             logger.error("Error while dispatching request!", e);
         } finally {
             try {
