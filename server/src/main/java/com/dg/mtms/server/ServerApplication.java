@@ -1,6 +1,6 @@
 package com.dg.mtms.server;
 
-import com.dg.mtms.server.annnotation.Controller;
+import com.dg.mtms.server.annotation.Controller;
 import com.dg.mtms.server.controller.MailPackageController;
 import com.dg.mtms.server.dispatcher.RequestDispatcher;
 import com.dg.mtms.server.repository.MailPackageRepository;

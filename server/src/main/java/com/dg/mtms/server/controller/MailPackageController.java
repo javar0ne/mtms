@@ -1,9 +1,10 @@
 package com.dg.mtms.server.controller;
 
 import com.dg.mtms.server.Singleton;
-import com.dg.mtms.server.annnotation.Controller;
-import com.dg.mtms.server.annnotation.Request;
-import com.dg.mtms.server.annnotation.RequestBody;
+import com.dg.mtms.server.annotation.Controller;
+import com.dg.mtms.server.annotation.Request;
+import com.dg.mtms.server.annotation.RequestBody;
+import com.dg.mtms.server.annotation.RequestParam;
 import com.dg.mtms.server.mapper.MailPackageMapper;
 import com.dg.mtms.server.model.MailPackage;
 import com.dg.mtms.server.model.request.SendMailPackageRequest;
@@ -30,12 +31,6 @@ public class MailPackageController extends Singleton<MailPackageController> {
     public static void createInstance(MailPackageService mailPackageService) {
         addInstance(new MailPackageController(mailPackageService));
     }
-
-    public static MailPackageController getInstance() {
-        return Singleton.getInstance(MailPackageController.class);
-    }
-
-    // TODO: handle exception throwing in controller
     @Request(endpoint = "/send-package", method = "POST")
     public HttpResponse sendPackage(@RequestBody SendMailPackageRequest sendMailPackageRequest) throws JsonProcessingException {
         logger.info("sending package: {}", sendMailPackageRequest);
@@ -43,5 +38,10 @@ public class MailPackageController extends Singleton<MailPackageController> {
         SendMailPackageResponse response = MailPackageMapper.INSTANCE.toSendMailPackageResponse(mailPackage);
         logger.info("sent package. id: {}", response.getId());
         return HttpResponse.ok(objectMapper.writeValueAsString(response));
+    }
+    @Request(endpoint = "/track-package")
+    public HttpResponse trackPackage(@RequestParam(value = "numberPackage") String numberPackage) {
+        logger.info("tracking package: {}",numberPackage);
+        return HttpResponse.ok();
     }
 }

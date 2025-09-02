@@ -9,7 +9,7 @@ public class HttpRequest {
     private String endpoint;
     private String version;
     private HashMap<String, String> headers = new HashMap<>();
-    private HashMap<String, String> queryParams = new HashMap<>();
+    private final HashMap<String, String> queryParams = new HashMap<>();
     private String body;
 
     public HttpMethod getMethod() {
@@ -59,6 +59,10 @@ public class HttpRequest {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public String getQueryParam(String key) {
+        return queryParams.get(key);
     }
 }
 

@@ -1,8 +1,13 @@
 package com.dg.mtms.server.dispatcher;
 
 import com.dg.mtms.server.Singleton;
-import com.dg.mtms.server.annnotation.Request;
+import com.dg.mtms.server.annotation.Request;
+import com.dg.mtms.server.annotation.RequestBody;
+import com.dg.mtms.server.annotation.RequestParam;
 import com.dg.mtms.server.model.request.HttpRequest;
+import com.dg.mtms.server.model.request.injector.RequestBodyInjector;
+import com.dg.mtms.server.model.request.injector.RequestInjector;
+import com.dg.mtms.server.model.request.injector.RequestParamInjector;
 import com.dg.mtms.server.model.response.HttpResponse;
 import com.dg.mtms.server.util.HttpParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,18 +18,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class RequestDispatcher implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestDispatcher.class);
     private final Map<String, Class<?>> controllers;
     private final Socket socket;
     private final ObjectMapper objectMapper;
+    private RequestInjector injector;
 
     public RequestDispatcher(Map<String, Class<?>> controllers, Socket socket) {
         this.controllers = controllers;
@@ -50,7 +54,7 @@ public class RequestDispatcher implements Runnable {
                 throw new IllegalStateException("No controller found for " + httpRequest.getEndpoint());
             }
 
-            String endpointPath = httpRequest.getEndpoint().substring(controllerBasePath.get().length());
+            String endpointPath = httpRequest.getEndpoint().substring(controllerBasePath.get().length()).split("\\?")[0];
             Optional<Method> matchedMethod = Arrays.stream(controllers.get(controllerBasePath.get()).getMethods())
                 .filter(m ->
                     m.isAnnotationPresent(Request.class) &&
@@ -68,10 +72,21 @@ public class RequestDispatcher implements Runnable {
                 throw new IllegalStateException("Endpoint not found");
             }
 
+            Parameter[] parameters = matchedMethod.get().getParameters();
+            Object[] arrayParams = new Object[matchedMethod.get().getParameterCount()];
+            for (int i=0; i<matchedMethod.get().getParameterCount(); i++){
+                Parameter parameter = parameters[i];
+                if (parameter.isAnnotationPresent(RequestParam.class)) {
+                    injector = new RequestParamInjector(httpRequest);
+                } else if(parameter.isAnnotationPresent(RequestBody.class)) {
+                    injector = new RequestBodyInjector(objectMapper, httpRequest);
+                }
+                arrayParams[i] = injector.inject(parameter);
+            }
 
             HttpResponse response = (HttpResponse) matchedMethod.get().invoke(
                 Singleton.getInstance(controllers.get(controllerBasePath.get())),
-                objectMapper.readValue(httpRequest.getBody(), matchedMethod.get().getParameterTypes()[0])
+                arrayParams
             );
             socketWriter.write(response.toString());
         } catch (Exception e) {
