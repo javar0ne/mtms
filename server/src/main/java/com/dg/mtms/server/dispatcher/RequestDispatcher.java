@@ -68,6 +68,7 @@ public class RequestDispatcher implements Runnable {
                 throw new IllegalStateException("Endpoint not found");
             }
 
+
             HttpResponse response = (HttpResponse) matchedMethod.get().invoke(
                 Singleton.getInstance(controllers.get(controllerBasePath.get())),
                 objectMapper.readValue(httpRequest.getBody(), matchedMethod.get().getParameterTypes()[0])

@@ -19,6 +19,7 @@ public class ParseLineRequestState implements RequestState{
             httpRequest.setMethod(HttpMethod.valueOf(request[0]));
             httpRequest.setEndpoint(request[1]);
             httpRequest.setVersion(request[2]);
+
             return new ParseHeaderRequestState();
         } catch (IOException e) {
             throw new RuntimeException(e);

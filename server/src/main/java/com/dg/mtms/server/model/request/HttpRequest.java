@@ -9,6 +9,7 @@ public class HttpRequest {
     private String endpoint;
     private String version;
     private HashMap<String, String> headers = new HashMap<>();
+    private HashMap<String, String> queryParams = new HashMap<>();
     private String body;
 
     public HttpMethod getMethod() {
@@ -25,6 +26,15 @@ public class HttpRequest {
 
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
+
+        if(!this.endpoint.contains("?") || !this.method.equals(HttpMethod.GET)) return;
+
+        String query = this.endpoint.split("\\?")[1];
+        String[] params = query.split("&");
+        for (String param : params) {
+            String[] kv = param.split("=");
+            this.queryParams.put(kv[0], kv[1]);
+        }
     }
 
     public String getVersion() {
