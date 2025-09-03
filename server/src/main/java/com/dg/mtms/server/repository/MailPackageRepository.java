@@ -3,11 +3,15 @@ package com.dg.mtms.server.repository;
 import com.dg.mtms.server.Singleton;
 import com.dg.mtms.server.db.DB;
 import com.dg.mtms.server.model.MailPackage;
+import com.dg.mtms.server.model.PackageStatus;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.StringJoiner;
 
 public class MailPackageRepository extends Singleton<MailPackageRepository> {
@@ -21,11 +25,11 @@ public class MailPackageRepository extends Singleton<MailPackageRepository> {
         return Singleton.getInstance(MailPackageRepository.class);
     }
 
-    public MailPackage insertPackage(MailPackage mailPackage) {
+    public MailPackage save(MailPackage mailPackage) {
         String sql = new StringJoiner(" ")
             .add("INSERT INTO")
             .add("MAIL_PACKAGE")
-            .add("(receiver, address, weight, user_id) VALUES (?, ?, ?, ?)")
+            .add("(RECEIVER, ADDRESS, WEIGHT, STATUS, USER_ID) VALUES (?, ?, ?, ?, ?)")
             .toString();
 
         try(
@@ -35,7 +39,8 @@ public class MailPackageRepository extends Singleton<MailPackageRepository> {
             preparedStatement.setString(1, mailPackage.getReceiver());
             preparedStatement.setString(2, mailPackage.getAddress());
             preparedStatement.setDouble(3, mailPackage.getWeight());
-            preparedStatement.setLong(4, mailPackage.getUserId());
+            preparedStatement.setString(4, mailPackage.getStatus().name());
+            preparedStatement.setLong(5, mailPackage.getUserId());
             preparedStatement.executeUpdate();
 
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
@@ -45,6 +50,114 @@ public class MailPackageRepository extends Singleton<MailPackageRepository> {
 
             return mailPackage;
         } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Optional<MailPackage> findById(Long id) {
+        String sql = new StringJoiner(" ")
+            .add("SELECT ID, RECEIVER, ADDRESS, WEIGHT, STATUS, USER_ID FROM")
+            .add("MAIL_PACKAGE")
+            .add("WHERE ID = ?")
+            .toString();
+
+        try(
+            Connection connection = DB.createConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)
+        ){
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(!resultSet.next()) return Optional.empty();
+
+            MailPackage mailPackage = new MailPackage();
+            mailPackage.setId(resultSet.getLong("ID"));
+            mailPackage.setReceiver(resultSet.getString("RECEIVER"));
+            mailPackage.setAddress(resultSet.getString("ADDRESS"));
+            mailPackage.setWeight(resultSet.getDouble("WEIGHT"));
+            mailPackage.setStatus(PackageStatus.valueOf(resultSet.getString("STATUS")));
+            mailPackage.setUserId(resultSet.getLong("USER_ID"));
+
+            return Optional.of(mailPackage);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void updateStatus(Long id, String status) {
+        String sql = new StringJoiner(" ")
+            .add("UPDATE MAIL_PACKAGE")
+            .add("SET STATUS = ?")
+            .add("WHERE ID = ?")
+            .toString();
+
+        try(
+            Connection connection = DB.createConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)
+        ){
+            preparedStatement.setString(1, PackageStatus.valueOf(status).name());
+            preparedStatement.setLong(2, id);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Optional<Double> findFee(Double weight, Double dimension) {
+        String sql = new StringJoiner(" ")
+            .add("SELECT FEE FROM")
+            .add("SHIPPING_FEE")
+            .add("WHERE WEIGHT_MIN <= ? AND WEIGHT_MAX >= ? AND DIM_MIN <= ? AND DIM_MAX >= ?")
+            .toString();
+
+        try(
+            Connection connection = DB.createConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)
+        ){
+            preparedStatement.setDouble(1, weight);
+            preparedStatement.setDouble(2, weight);
+            preparedStatement.setDouble(3, dimension);
+            preparedStatement.setDouble(4, dimension);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(!resultSet.next()) return Optional.empty();
+
+            return Optional.of(resultSet.getDouble("FEE"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<MailPackage> findByUserId(Long userId) {
+        String sql = new StringJoiner(" ")
+            .add("SELECT ID, RECEIVER, ADDRESS, WEIGHT, STATUS, USER_ID FROM")
+            .add("MAIL_PACKAGE")
+            .add("WHERE USER_ID = ?")
+            .toString();
+
+        try(
+            Connection connection = DB.createConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)
+        ){
+            preparedStatement.setLong(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<MailPackage> mailPackages = new ArrayList<>();
+            while(resultSet.next()) {
+                MailPackage mailPackage = new MailPackage();
+                mailPackage.setId(resultSet.getLong("ID"));
+                mailPackage.setReceiver(resultSet.getString("RECEIVER"));
+                mailPackage.setAddress(resultSet.getString("ADDRESS"));
+                mailPackage.setWeight(resultSet.getDouble("WEIGHT"));
+                mailPackage.setStatus(PackageStatus.valueOf(resultSet.getString("STATUS")));
+                mailPackage.setUserId(resultSet.getLong("USER_ID"));
+
+                mailPackages.add(mailPackage);
+            }
+
+            return mailPackages;
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }

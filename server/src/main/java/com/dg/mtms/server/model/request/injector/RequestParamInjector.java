@@ -22,6 +22,18 @@ public class RequestParamInjector implements  RequestInjector {
                 .map(RequestParam::value)
                 .filter(StringUtils::isNotBlank)
                 .orElseThrow(() -> new IllegalArgumentException("RequestParam annotation is required"));
-        return httpRequest.getQueryParam(value);
+        return convertQueryParam(parameter.getType(), httpRequest.getQueryParam(value));
+    }
+
+    private Object convertQueryParam(Class<?> type, String value) {
+        if(type.equals(Integer.class)) {
+            return Integer.parseInt(value);
+        } else if(type.equals(Long.class)) {
+            return Long.parseLong(value);
+        } else if(type.equals(Double.class)) {
+            return Double.parseDouble(value);
+        } else {
+            return value;
+        }
     }
 }

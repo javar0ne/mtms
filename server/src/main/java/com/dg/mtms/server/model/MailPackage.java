@@ -5,6 +5,7 @@ public class MailPackage {
     private String receiver;
     private String address;
     private Double weight;
+    private PackageStatus status;
     private Long userId;
 
     public Long getId() {
@@ -39,11 +40,31 @@ public class MailPackage {
         this.weight = weight;
     }
 
+    public PackageStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PackageStatus status) {
+        this.status = status;
+    }
+
     public Long getUserId() {
         return userId;
     }
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public String toString() {
+        return "MailPackage{" +
+            "id=" + id +
+            ", receiver='" + receiver + '\'' +
+            ", address='" + address + '\'' +
+            ", weight=" + weight +
+            ", status=" + status +
+            ", userId=" + userId +
+            '}';
     }
 }

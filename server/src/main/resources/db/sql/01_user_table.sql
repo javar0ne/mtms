@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username VARCHAR(50) NOT NULL,
-    password VARCHAR(64) NOT NULL
+    UNIQUE(username)
 );

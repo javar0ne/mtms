@@ -2,9 +2,12 @@ package com.dg.mtms.server;
 
 import com.dg.mtms.server.annotation.Controller;
 import com.dg.mtms.server.controller.MailPackageController;
+import com.dg.mtms.server.controller.UserController;
 import com.dg.mtms.server.dispatcher.RequestDispatcher;
 import com.dg.mtms.server.repository.MailPackageRepository;
+import com.dg.mtms.server.repository.UserRepository;
 import com.dg.mtms.server.service.MailPackageService;
+import com.dg.mtms.server.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +37,11 @@ public class ServerApplication {
     }
 
     private static void initSingletons() {
+        UserRepository.createInstance();
+        UserService.createInstance(UserRepository.getInstance());
+        UserController.createInstance(UserService.getInstance());
         MailPackageRepository.createInstance();
-        MailPackageService.createInstance(MailPackageRepository.getInstance());
+        MailPackageService.createInstance(UserService.getInstance(), MailPackageRepository.getInstance());
         MailPackageController.createInstance(MailPackageService.getInstance());
     }
 

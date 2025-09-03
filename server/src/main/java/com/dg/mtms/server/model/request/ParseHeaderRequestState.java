@@ -3,6 +3,7 @@ package com.dg.mtms.server.model.request;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+import static com.dg.mtms.server.enums.HttpMethod.GET;
 import static com.dg.mtms.server.enums.HttpMethod.POST;
 
 public class ParseHeaderRequestState implements RequestState{
@@ -11,7 +12,7 @@ public class ParseHeaderRequestState implements RequestState{
         try {
             String line = reader.readLine();
             if(line.isEmpty()){
-                if(POST.equals(httpRequest.getMethod())){
+                if(!GET.equals(httpRequest.getMethod())){
                     return new ParseBodyRequestState();
                 } else {
                     return new DoneRequestState();
