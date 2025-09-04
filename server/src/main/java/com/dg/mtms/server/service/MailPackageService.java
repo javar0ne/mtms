@@ -3,6 +3,7 @@ package com.dg.mtms.server.service;
 import com.dg.mtms.server.Singleton;
 import com.dg.mtms.server.exception.EntityNotFoundException;
 import com.dg.mtms.server.mapper.MailPackageMapper;
+import com.dg.mtms.server.model.Dimension;
 import com.dg.mtms.server.model.MailPackage;
 import com.dg.mtms.server.model.User;
 import com.dg.mtms.server.model.request.dto.SendMailPackageRequest;
@@ -46,12 +47,17 @@ public class MailPackageService extends Singleton<MailPackageService> {
             .orElseThrow(() -> new EntityNotFoundException("No package found with id: " + packageNumber));
     }
 
-    public Double findFee(Double weight, Double dimension) {
+    public Double findFee(Double weight, Dimension dimension) {
         return mailPackageRepository.findFee(weight, dimension)
             .orElseThrow(() -> new EntityNotFoundException("No fee found for package with weight: " + weight + " and dimension: " + dimension));
     }
 
-    public List<MailPackage> findByUserId(Long userId) {
-        return mailPackageRepository.findByUserId(userId);
+    public List<MailPackage> findPackages(String username) {
+        Optional<User> user = userService.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new EntityNotFoundException("No user found with username: " + username);
+        }
+
+        return mailPackageRepository.findPackages(user.get().getId());
     }
 }

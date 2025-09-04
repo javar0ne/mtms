@@ -4,6 +4,7 @@ public class MailPackage {
     private Long id;
     private String receiver;
     private String address;
+    private Dimension dimension;
     private Double weight;
     private PackageStatus status;
     private Long userId;
@@ -66,5 +67,13 @@ public class MailPackage {
             ", status=" + status +
             ", userId=" + userId +
             '}';
+    }
+
+    public Dimension getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(Dimension dimension) {
+        this.dimension = dimension;
     }
 }

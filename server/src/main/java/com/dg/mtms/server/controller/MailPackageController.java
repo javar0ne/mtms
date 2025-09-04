@@ -7,6 +7,7 @@ import com.dg.mtms.server.annotation.RequestBody;
 import com.dg.mtms.server.annotation.RequestParam;
 import com.dg.mtms.server.exception.EntityNotFoundException;
 import com.dg.mtms.server.mapper.MailPackageMapper;
+import com.dg.mtms.server.model.Dimension;
 import com.dg.mtms.server.model.MailPackage;
 import com.dg.mtms.server.model.request.dto.UpdatePackageStatusRequest;
 import com.dg.mtms.server.model.request.dto.SendMailPackageRequest;
@@ -69,10 +70,11 @@ public class MailPackageController extends Singleton<MailPackageController> {
         }
     }
 
-    @Request(endpoint = "/find-fee")
-    public HttpResponse findFee(@RequestParam(value = "weight") Double weight, @RequestParam(value = "dim") Double dimension) {
-        logger.info("calculating fee for package with weight: {} and dimension: {}", weight, dimension);
+    @Request(endpoint = "/calculate-fee")
+    public HttpResponse calculateFee(@RequestParam(value = "length") Double length, @RequestParam(value = "width") Double width, @RequestParam(value = "height") Double height, @RequestParam(value = "weight") Double weight) {
+        logger.info("calculating fee for package with weight: {} and dimension: {} - {} - {}", weight, length, width, height);
         try {
+            Dimension dimension = new Dimension(length, width, height);
             Double fee = mailPackageService.findFee(weight, dimension);
             logger.info("package fee found: {}", fee);
             return HttpResponse.ok(new PackageFeeResponse(fee));
@@ -83,11 +85,11 @@ public class MailPackageController extends Singleton<MailPackageController> {
     }
 
     @Request(endpoint = "/user")
-    public HttpResponse pastPackages(@RequestParam(value = "userId") Long userId) {
-        logger.info("looking for past shipments for user with id: {}", userId);
+    public HttpResponse pastPackages(@RequestParam(value = "username") String username) {
+        logger.info("looking for past shipments for user: {}", username);
         try {
-            List<MailPackage> mailPackages = mailPackageService.findByUserId(userId);
-            logger.info("found {} past shipments for user with id: {}", mailPackages.size(), userId);
+            List<MailPackage> mailPackages = mailPackageService.findPackages(username);
+            logger.info("found {} past shipments for user: {}", mailPackages.size(), username);
             return HttpResponse.ok(
                 mailPackages.stream()
                     .map(MailPackageMapper.INSTANCE::toSendMailPackageResponse)

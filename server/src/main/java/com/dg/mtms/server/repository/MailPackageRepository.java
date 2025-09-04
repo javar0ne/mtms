@@ -2,6 +2,7 @@ package com.dg.mtms.server.repository;
 
 import com.dg.mtms.server.Singleton;
 import com.dg.mtms.server.db.DB;
+import com.dg.mtms.server.model.Dimension;
 import com.dg.mtms.server.model.MailPackage;
 import com.dg.mtms.server.model.PackageStatus;
 
@@ -29,7 +30,7 @@ public class MailPackageRepository extends Singleton<MailPackageRepository> {
         String sql = new StringJoiner(" ")
             .add("INSERT INTO")
             .add("MAIL_PACKAGE")
-            .add("(RECEIVER, ADDRESS, WEIGHT, STATUS, USER_ID) VALUES (?, ?, ?, ?, ?)")
+            .add("(RECEIVER, ADDRESS, PACKAGE_LENGTH, PACKAGE_WIDTH, PACKAGE_HEIGHT, PACKAGE_WEIGHT, STATUS, USER_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
             .toString();
 
         try(
@@ -38,9 +39,12 @@ public class MailPackageRepository extends Singleton<MailPackageRepository> {
         ){
             preparedStatement.setString(1, mailPackage.getReceiver());
             preparedStatement.setString(2, mailPackage.getAddress());
-            preparedStatement.setDouble(3, mailPackage.getWeight());
-            preparedStatement.setString(4, mailPackage.getStatus().name());
-            preparedStatement.setLong(5, mailPackage.getUserId());
+            preparedStatement.setDouble(3, mailPackage.getDimension().length());
+            preparedStatement.setDouble(4, mailPackage.getDimension().width());
+            preparedStatement.setDouble(5, mailPackage.getDimension().height());
+            preparedStatement.setDouble(6, mailPackage.getWeight());
+            preparedStatement.setString(7, mailPackage.getStatus().name());
+            preparedStatement.setLong(8, mailPackage.getUserId());
             preparedStatement.executeUpdate();
 
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
@@ -56,7 +60,7 @@ public class MailPackageRepository extends Singleton<MailPackageRepository> {
 
     public Optional<MailPackage> findById(Long id) {
         String sql = new StringJoiner(" ")
-            .add("SELECT ID, RECEIVER, ADDRESS, WEIGHT, STATUS, USER_ID FROM")
+            .add("SELECT ID, RECEIVER, ADDRESS, PACKAGE_LENGTH, PACKAGE_WIDTH, PACKAGE_HEIGHT, PACKAGE_WEIGHT, STATUS, USER_ID FROM")
             .add("MAIL_PACKAGE")
             .add("WHERE ID = ?")
             .toString();
@@ -74,7 +78,12 @@ public class MailPackageRepository extends Singleton<MailPackageRepository> {
             mailPackage.setId(resultSet.getLong("ID"));
             mailPackage.setReceiver(resultSet.getString("RECEIVER"));
             mailPackage.setAddress(resultSet.getString("ADDRESS"));
-            mailPackage.setWeight(resultSet.getDouble("WEIGHT"));
+            mailPackage.setDimension(new Dimension(
+                    resultSet.getDouble("PACKAGE_LENGTH"),
+                    resultSet.getDouble("PACKAGE_WIDTH"),
+                    resultSet.getDouble("PACKAGE_HEIGHT")
+            ));
+            mailPackage.setWeight(resultSet.getDouble("PACKAGE_WEIGHT"));
             mailPackage.setStatus(PackageStatus.valueOf(resultSet.getString("STATUS")));
             mailPackage.setUserId(resultSet.getLong("USER_ID"));
 
@@ -104,11 +113,14 @@ public class MailPackageRepository extends Singleton<MailPackageRepository> {
         }
     }
 
-    public Optional<Double> findFee(Double weight, Double dimension) {
+    public Optional<Double> findFee(Double weight, Dimension dimension) {
         String sql = new StringJoiner(" ")
             .add("SELECT FEE FROM")
             .add("SHIPPING_FEE")
-            .add("WHERE WEIGHT_MIN <= ? AND WEIGHT_MAX >= ? AND DIM_MIN <= ? AND DIM_MAX >= ?")
+            .add("WHERE PACKAGE_WEIGHT_MIN <= ? AND PACKAGE_WEIGHT_MAX >= ? AND " +
+                    "PACKAGE_LENGTH_MIN <= ? AND PACKAGE_LENGTH_MAX >= ? AND " +
+                    "PACKAGE_WIDTH_MIN <= ? AND PACKAGE_WIDTH_MAX >= ? AND " +
+                    "PACKAGE_HEIGHT_MIN <= ? AND PACKAGE_HEIGHT_MAX >= ?")
             .toString();
 
         try(
@@ -117,8 +129,12 @@ public class MailPackageRepository extends Singleton<MailPackageRepository> {
         ){
             preparedStatement.setDouble(1, weight);
             preparedStatement.setDouble(2, weight);
-            preparedStatement.setDouble(3, dimension);
-            preparedStatement.setDouble(4, dimension);
+            preparedStatement.setDouble(3, dimension.length());
+            preparedStatement.setDouble(4, dimension.length());
+            preparedStatement.setDouble(5, dimension.width());
+            preparedStatement.setDouble(6, dimension.width());
+            preparedStatement.setDouble(7, dimension.height());
+            preparedStatement.setDouble(8, dimension.height());
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if(!resultSet.next()) return Optional.empty();
@@ -129,9 +145,9 @@ public class MailPackageRepository extends Singleton<MailPackageRepository> {
         }
     }
 
-    public List<MailPackage> findByUserId(Long userId) {
+    public List<MailPackage> findPackages(Long userId) {
         String sql = new StringJoiner(" ")
-            .add("SELECT ID, RECEIVER, ADDRESS, WEIGHT, STATUS, USER_ID FROM")
+            .add("SELECT ID, RECEIVER, ADDRESS, PACKAGE_LENGTH, PACKAGE_WIDTH, PACKAGE_HEIGHT, PACKAGE_WEIGHT, STATUS, USER_ID FROM")
             .add("MAIL_PACKAGE")
             .add("WHERE USER_ID = ?")
             .toString();
@@ -149,7 +165,12 @@ public class MailPackageRepository extends Singleton<MailPackageRepository> {
                 mailPackage.setId(resultSet.getLong("ID"));
                 mailPackage.setReceiver(resultSet.getString("RECEIVER"));
                 mailPackage.setAddress(resultSet.getString("ADDRESS"));
-                mailPackage.setWeight(resultSet.getDouble("WEIGHT"));
+                mailPackage.setDimension(new Dimension(
+                        resultSet.getDouble("PACKAGE_LENGTH"),
+                        resultSet.getDouble("PACKAGE_WIDTH"),
+                        resultSet.getDouble("PACKAGE_HEIGHT")
+                        ));
+                mailPackage.setWeight(resultSet.getDouble("PACKAGE_WEIGHT"));
                 mailPackage.setStatus(PackageStatus.valueOf(resultSet.getString("STATUS")));
                 mailPackage.setUserId(resultSet.getLong("USER_ID"));
 
