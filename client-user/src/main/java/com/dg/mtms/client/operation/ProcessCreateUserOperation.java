@@ -10,7 +10,7 @@ public class ProcessCreateUserOperation extends ProcessOperation {
     @Override
     public void process(Scanner scanner) {
         System.out.println("Registrazione utente.");
-        System.out.println("Inserisci l'username: ");
+        System.out.print("Inserisci l'username: ");
         String username = scanner.nextLine();
 
         UserCreateRequest userCreateRequest = new UserCreateRequest(username);

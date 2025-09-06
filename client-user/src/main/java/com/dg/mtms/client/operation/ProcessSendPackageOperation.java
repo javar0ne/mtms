@@ -12,15 +12,15 @@ public class ProcessSendPackageOperation extends ProcessOperation {
     @Override
     public void process(Scanner scanner) {
         System.out.println("Invia nuovo pacco.");
-        System.out.println("Inserisci destinatario: ");
+        System.out.print("Inserisci destinatario: ");
         String receiver = scanner.nextLine();
-        System.out.println("Inserisci l'indirizzo: ");
+        System.out.print("Inserisci l'indirizzo: ");
         String address = scanner.nextLine();
-        System.out.println("Inserisci la dimensione (l x w x h): ");
+        System.out.print("Inserisci la dimensione (l x w x h): ");
         String[] size = scanner.nextLine().split("x");
-        System.out.println("Inserisci il peso: ");
+        System.out.print("Inserisci il peso: ");
         String weight = scanner.nextLine();
-        System.out.println("Inserisci l'username: ");
+        System.out.print("Inserisci l'username: ");
         String username = scanner.nextLine();
 
         MTMSClient.getInstance().sendPackage(

@@ -9,7 +9,7 @@ public class ProcessUserHistoryOperation extends ProcessOperation {
     @Override
     public void process(Scanner scanner) {
         System.out.println("Storico spedizioni.");
-        System.out.println("Inserisci l'username: ");
+        System.out.print("Inserisci l'username: ");
         String username = scanner.nextLine();
 
         MTMSClient.getInstance().getUserHistory(username);

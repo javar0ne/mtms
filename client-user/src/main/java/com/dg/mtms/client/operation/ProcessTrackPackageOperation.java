@@ -9,7 +9,7 @@ public class ProcessTrackPackageOperation extends ProcessOperation {
     @Override
     public void process(Scanner scanner) {
         System.out.println("Traccia spedizione.");
-        System.out.println("Inserisci il numero di spedizione: ");
+        System.out.print("Inserisci il numero di spedizione: ");
         String trackingNumber = scanner.nextLine();
 
         MTMSClient.getInstance().trackPackage(trackingNumber);

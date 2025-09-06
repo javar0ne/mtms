@@ -1,6 +1,5 @@
 package com.dg.mtms.client;
 
-import com.dg.mtms.client.client.MTMSClient;
 import com.dg.mtms.client.operation.Operation;
 import com.dg.mtms.client.operation.ProcessOperation;
 
@@ -23,6 +22,6 @@ public class ClientUserApplication {
                 System.out.println("Opzione non valida!");
             }
 
-        } while (operationCode != Operation.EXIT.getValue());
+        } while (operationCode != Operation.EXIT.getCode());
     }
 }

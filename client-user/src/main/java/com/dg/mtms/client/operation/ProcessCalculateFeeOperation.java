@@ -10,7 +10,7 @@ public class ProcessCalculateFeeOperation extends ProcessOperation {
     @Override
     public void process(Scanner scanner) {
         System.out.println("Calcola tariffa.");
-        System.out.println("Inserisci le dimensioni (l x w x h): ");
+        System.out.print("Inserisci le dimensioni (l x w x h): ");
         String[] size = scanner.nextLine().split("x");
 
         MTMSClient.getInstance().calculateFee(

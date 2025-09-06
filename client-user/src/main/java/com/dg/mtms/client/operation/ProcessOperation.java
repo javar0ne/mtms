@@ -1,7 +1,5 @@
 package com.dg.mtms.client.operation;
 
-import com.dg.mtms.client.client.MTMSClient;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,16 +20,21 @@ public abstract class ProcessOperation {
         reader.close();
     }
 
-    public static ProcessOperation getInstance(Integer operationCode) {
-        // TODO: match with enum operation codes
-        return switch (operationCode) {
-            case 1 -> new ProcessCreateUserOperation();
-            case 2 -> new ProcessSendPackageOperation();
-            case 3 -> new ProcessTrackPackageOperation();
-            case 4 -> new ProcessCalculateFeeOperation();
-            case 5 -> new ProcessUserHistoryOperation();
-            case 6 -> new ProcessExitOperation();
-            default -> throw new IllegalArgumentException("Invalid operation code");
-        };
+    public static ProcessOperation getInstance(int operationCode) {
+        if(Operation.CREATE_USER.getCode() == operationCode) {
+            return new ProcessCreateUserOperation();
+        } else if(Operation.SEND_PACKAGE.getCode() == operationCode) {
+            return new ProcessSendPackageOperation();
+        } else if(Operation.TRACK_PACKAGE.getCode() == operationCode) {
+            return new ProcessTrackPackageOperation();
+        } else if(Operation.CALCULATE_FEE.getCode() == operationCode) {
+            return new ProcessCalculateFeeOperation();
+        } else if(Operation.GET_HISTORY.getCode() == operationCode) {
+            return new ProcessUserHistoryOperation();
+        } else if(Operation.EXIT.getCode() == operationCode) {
+            return new ProcessExitOperation();
+        }
+
+        throw new IllegalArgumentException("Invalid operation code");
     }
 }
