@@ -1,17 +1,17 @@
 package com.dg.mtms.server.controller;
 
-import com.dg.mtms.server.Singleton;
+import com.dg.mtms.server.model.Singleton;
 import com.dg.mtms.server.annotation.Controller;
 import com.dg.mtms.server.annotation.Request;
 import com.dg.mtms.server.annotation.RequestBody;
 import com.dg.mtms.server.exception.UsernameAlreadyExistsException;
 import com.dg.mtms.server.mapper.UserMapper;
 import com.dg.mtms.server.model.User;
-import com.dg.mtms.server.model.request.dto.UserCreateRequest;
 import com.dg.mtms.server.model.response.HttpResponse;
 import com.dg.mtms.server.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.dg.mtms.common.UserCreateRequest;
 
 @Controller(basePath = "/v1/user")
 public class UserController extends Singleton<UserController> {

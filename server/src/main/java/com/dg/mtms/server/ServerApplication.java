@@ -17,6 +17,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -55,7 +58,12 @@ public class ServerApplication {
 
             if(resource == null) return;
 
-            directory = new File(resource.toURI());
+            if(resource.toURI().getScheme().equals("jar")) {
+                FileSystem fileSystem = FileSystems.newFileSystem(resource.toURI(), Collections.emptyMap());
+                directory = fileSystem.getPath(path).toFile();
+            } else {
+                directory = new File(resource.toURI());
+            }
             files = directory.listFiles();
 
             if(files == null) return;
@@ -75,7 +83,7 @@ public class ServerApplication {
                     validateAndPopulateControllers(packageName + "." + file.getName());
                 }
             }
-        } catch (URISyntaxException | ClassNotFoundException e) {
+        } catch (URISyntaxException | ClassNotFoundException | IOException e) {
             logger.error("Error while validating and populating controllers!", e);
         }
     }

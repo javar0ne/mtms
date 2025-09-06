@@ -1,12 +1,12 @@
 package com.dg.mtms.server.mapper;
 
 import com.dg.mtms.server.model.User;
-import com.dg.mtms.server.model.request.dto.UserCreateRequest;
-import com.dg.mtms.server.model.response.dto.UserCreateResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
+import com.dg.mtms.common.UserCreateRequest;
+import com.dg.mtms.common.response.UserCreateResponse;
 
 @Mapper
 public interface UserMapper {

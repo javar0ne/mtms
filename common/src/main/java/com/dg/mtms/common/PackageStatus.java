@@ -1,4 +1,4 @@
-package com.dg.mtms.server.model;
+package com.dg.mtms.common;
 
 public enum PackageStatus {
     SHIPPED,

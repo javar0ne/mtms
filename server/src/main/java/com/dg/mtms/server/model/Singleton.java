@@ -1,4 +1,4 @@
-package com.dg.mtms.server;
+package com.dg.mtms.server.model;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,10 +1,10 @@
 package com.dg.mtms.server.repository;
 
-import com.dg.mtms.server.Singleton;
+import com.dg.mtms.server.model.Singleton;
 import com.dg.mtms.server.db.DB;
 import com.dg.mtms.server.model.Dimension;
 import com.dg.mtms.server.model.MailPackage;
-import com.dg.mtms.server.model.PackageStatus;
+import com.dg.mtms.common.PackageStatus;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

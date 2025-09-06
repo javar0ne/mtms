@@ -1,5 +1,7 @@
 package com.dg.mtms.server.model;
 
+import com.dg.mtms.common.PackageStatus;
+
 public class MailPackage {
     private Long id;
     private String receiver;

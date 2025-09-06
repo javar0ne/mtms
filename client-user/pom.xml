@@ -9,8 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>client</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>client-user</artifactId>
 
     <build>
         <plugins>
@@ -24,5 +23,19 @@
             </plugin>
         </plugins>
     </build>
+
+    <dependencies>
+        <!-- INTERNAL -->
+        <dependency>
+            <groupId>com.dg</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+
+        <!-- TOOL -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

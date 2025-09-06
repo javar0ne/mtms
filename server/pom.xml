@@ -10,13 +10,26 @@
     </parent>
 
     <artifactId>server</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+
+    <properties>
+        <main.class>com.dg.mtms.server.ServerApplication</main.class>
+    </properties>
 
     <dependencies>
+        <!-- INTERNAL -->
+        <dependency>
+            <groupId>com.dg</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+
         <!-- TOOL -->
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
 
         <!-- DATABASE -->
@@ -30,10 +43,6 @@
         </dependency>
 
         <!-- LOGGING -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -49,6 +58,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

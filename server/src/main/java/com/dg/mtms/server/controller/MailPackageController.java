@@ -1,6 +1,7 @@
 package com.dg.mtms.server.controller;
 
-import com.dg.mtms.server.Singleton;
+import com.dg.mtms.common.SendMailPackageRequest;
+import com.dg.mtms.server.model.Singleton;
 import com.dg.mtms.server.annotation.Controller;
 import com.dg.mtms.server.annotation.Request;
 import com.dg.mtms.server.annotation.RequestBody;
@@ -9,13 +10,12 @@ import com.dg.mtms.server.exception.EntityNotFoundException;
 import com.dg.mtms.server.mapper.MailPackageMapper;
 import com.dg.mtms.server.model.Dimension;
 import com.dg.mtms.server.model.MailPackage;
-import com.dg.mtms.server.model.request.dto.UpdatePackageStatusRequest;
-import com.dg.mtms.server.model.request.dto.SendMailPackageRequest;
 import com.dg.mtms.server.model.response.HttpResponse;
-import com.dg.mtms.server.model.response.dto.PackageFeeResponse;
 import com.dg.mtms.server.service.MailPackageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.dg.mtms.common.UpdatePackageStatusRequest;
+import com.dg.mtms.common.response.PackageFeeResponse;
 
 import java.util.List;
 

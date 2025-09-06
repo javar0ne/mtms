@@ -1,12 +1,12 @@
 package com.dg.mtms.server.mapper;
 
+import com.dg.mtms.common.SendMailPackageRequest;
 import com.dg.mtms.server.model.MailPackage;
-import com.dg.mtms.server.model.request.dto.SendMailPackageRequest;
-import com.dg.mtms.server.model.response.dto.SendMailPackageResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
+import com.dg.mtms.common.response.SendMailPackageResponse;
 
 @Mapper
 public interface MailPackageMapper {

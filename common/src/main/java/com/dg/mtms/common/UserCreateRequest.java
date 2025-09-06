@@ -1,6 +1,6 @@
-package com.dg.mtms.server.model.request.dto;
+package com.dg.mtms.common;
 
-public record UserCreateRequest(String username, String password) {
+public record UserCreateRequest(String username) {
     @Override
     public String toString() {
         return "UserCreateRequest{" +

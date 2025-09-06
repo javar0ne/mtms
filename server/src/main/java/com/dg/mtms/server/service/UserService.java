@@ -1,6 +1,6 @@
 package com.dg.mtms.server.service;
 
-import com.dg.mtms.server.Singleton;
+import com.dg.mtms.server.model.Singleton;
 import com.dg.mtms.server.model.User;
 import com.dg.mtms.server.repository.UserRepository;
 

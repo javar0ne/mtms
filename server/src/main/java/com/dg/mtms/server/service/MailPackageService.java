@@ -1,12 +1,12 @@
 package com.dg.mtms.server.service;
 
-import com.dg.mtms.server.Singleton;
+import com.dg.mtms.common.SendMailPackageRequest;
+import com.dg.mtms.server.model.Singleton;
 import com.dg.mtms.server.exception.EntityNotFoundException;
 import com.dg.mtms.server.mapper.MailPackageMapper;
 import com.dg.mtms.server.model.Dimension;
 import com.dg.mtms.server.model.MailPackage;
 import com.dg.mtms.server.model.User;
-import com.dg.mtms.server.model.request.dto.SendMailPackageRequest;
 import com.dg.mtms.server.repository.MailPackageRepository;
 
 import java.util.List;

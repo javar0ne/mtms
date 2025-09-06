@@ -1,6 +1,6 @@
 package com.dg.mtms.server.repository;
 
-import com.dg.mtms.server.Singleton;
+import com.dg.mtms.server.model.Singleton;
 import com.dg.mtms.server.db.DB;
 import com.dg.mtms.server.exception.UsernameAlreadyExistsException;
 import com.dg.mtms.server.model.User;

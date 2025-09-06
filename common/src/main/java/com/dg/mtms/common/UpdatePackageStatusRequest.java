@@ -1,3 +1,3 @@
-package com.dg.mtms.server.model.request.dto;
+package com.dg.mtms.common;
 
 public record UpdatePackageStatusRequest(Long id, String status){}

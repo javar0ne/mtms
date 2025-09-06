@@ -1,6 +1,6 @@
 package com.dg.mtms.server.dispatcher;
 
-import com.dg.mtms.server.Singleton;
+import com.dg.mtms.server.model.Singleton;
 import com.dg.mtms.server.annotation.Request;
 import com.dg.mtms.server.annotation.RequestBody;
 import com.dg.mtms.server.annotation.RequestParam;
@@ -90,7 +90,7 @@ public class RequestDispatcher implements Runnable {
             );
             socketWriter.write(response.toString());
         } catch (Exception e) {
-            logger.error("Error while dispatching request!", e);
+            logger.error("Error while dispatching com.dg.mtms.common.request!", e);
         } finally {
             try {
                 socket.close();

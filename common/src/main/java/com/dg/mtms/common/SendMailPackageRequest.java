@@ -1,6 +1,5 @@
-package com.dg.mtms.server.model.request.dto;
+package com.dg.mtms.common;
 
-import com.dg.mtms.server.model.Dimension;
 
 public record SendMailPackageRequest(String receiver, String address, Dimension dimension, Double weight, String username){
     @Override

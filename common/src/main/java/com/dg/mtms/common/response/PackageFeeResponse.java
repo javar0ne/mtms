@@ -1,3 +1,3 @@
-package com.dg.mtms.server.model.response.dto;
+package com.dg.mtms.common.response;
 
 public record PackageFeeResponse(Double fee) {}
