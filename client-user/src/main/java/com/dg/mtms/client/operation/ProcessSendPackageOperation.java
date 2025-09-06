@@ -8,9 +8,6 @@ import java.util.Scanner;
 
 
 public class ProcessSendPackageOperation extends ProcessOperation {
-    public ProcessSendPackageOperation(MTMSClient client) {
-        super(client);
-    }
 
     @Override
     public void process(Scanner scanner) {
@@ -26,7 +23,7 @@ public class ProcessSendPackageOperation extends ProcessOperation {
         System.out.println("Inserisci l'username: ");
         String username = scanner.nextLine();
 
-        client.sendPackage(
+        MTMSClient.getInstance().sendPackage(
             new SendMailPackageRequest(
                 receiver,
                 address,

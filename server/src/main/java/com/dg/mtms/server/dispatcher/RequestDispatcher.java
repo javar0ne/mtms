@@ -90,7 +90,7 @@ public class RequestDispatcher implements Runnable {
             );
             socketWriter.write(response.toString());
         } catch (Exception e) {
-            logger.error("Error while dispatching com.dg.mtms.common.request!", e);
+            logger.error("Error while dispatching request!", e);
         } finally {
             try {
                 socket.close();

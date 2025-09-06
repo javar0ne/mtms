@@ -32,4 +32,9 @@ public enum Operation {
             .map(operation -> String.format("%d. %s", operation.getValue(), operation.getDescription()))
             .collect(Collectors.joining("\n"));
     }
+
+    public static boolean isValid(int value) {
+        return Arrays.stream(Operation.values())
+            .anyMatch(operation -> operation.getValue() == value);
+    }
 }

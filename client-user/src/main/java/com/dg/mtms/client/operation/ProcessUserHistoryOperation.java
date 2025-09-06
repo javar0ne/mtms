@@ -5,9 +5,6 @@ import com.dg.mtms.client.client.MTMSClient;
 import java.util.Scanner;
 
 public class ProcessUserHistoryOperation extends ProcessOperation {
-    public ProcessUserHistoryOperation(MTMSClient client) {
-        super(client);
-    }
 
     @Override
     public void process(Scanner scanner) {
@@ -15,6 +12,6 @@ public class ProcessUserHistoryOperation extends ProcessOperation {
         System.out.println("Inserisci l'username: ");
         String username = scanner.nextLine();
 
-        client.getUserHistory(username);
+        MTMSClient.getInstance().getUserHistory(username);
     }
 }

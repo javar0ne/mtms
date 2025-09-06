@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class MTMSClient {
-    private static final String BASE_URL = "http://localhost:8080";
+    private static final String BASE_URL = "http://127.0.0.1:8080";
     private static final String CREATE_USER_PATH = "/v1/user";
     private static final String MAIL_SEND_PACKAGE_PATH = "/v1/mail/send-package";
     private static final String MAIL_TRACK_PACKAGE_PATH = "/v1/mail/track-package?packageNumber=%s";
@@ -35,7 +35,8 @@ public class MTMSClient {
             String body = objectMapper.writeValueAsString(content);
             HttpRequest request = new HttpRequest();
             request.setMethod("POST");
-            request.setUrl(BASE_URL + path);
+            request.setPath(path);
+            request.setHost(BASE_URL);
             request.setVersion("HTTP/1.1");
             request.addHeader("Content-Type", "application/json");
             request.addHeader("Content-Length", String.valueOf(body.length()));
@@ -53,7 +54,8 @@ public class MTMSClient {
         ) {
             HttpRequest request = new HttpRequest();
             request.setMethod("GET");
-            request.setUrl(BASE_URL + path);
+            request.setPath(path);
+            request.setHost(BASE_URL);
             request.setVersion("HTTP/1.1");
             socketWriter.write(request.toString());
         } catch (IOException e) {

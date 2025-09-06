@@ -10,12 +10,6 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public abstract class ProcessOperation {
-    protected final MTMSClient client;
-
-    protected ProcessOperation(MTMSClient client) {
-        this.client = client;
-    }
-
     public abstract void process(Scanner scanner);
 
     protected void readResponse(Socket socket) throws IOException {
@@ -28,14 +22,15 @@ public abstract class ProcessOperation {
         reader.close();
     }
 
-    public static ProcessOperation getInstance(Integer operationCode, MTMSClient client) {
+    public static ProcessOperation getInstance(Integer operationCode) {
         // TODO: match with enum operation codes
         return switch (operationCode) {
-            case 1 -> new ProcessCreateUserOperation(client);
-            case 2 -> new ProcessSendPackageOperation(client);
-            case 3 -> new ProcessTrackPackageOperation(client);
-            case 4 -> new ProcessCalculateFeeOperation(client);
-            case 5 -> new ProcessUserHistoryOperation(client);
+            case 1 -> new ProcessCreateUserOperation();
+            case 2 -> new ProcessSendPackageOperation();
+            case 3 -> new ProcessTrackPackageOperation();
+            case 4 -> new ProcessCalculateFeeOperation();
+            case 5 -> new ProcessUserHistoryOperation();
+            case 6 -> new ProcessExitOperation();
             default -> throw new IllegalArgumentException("Invalid operation code");
         };
     }

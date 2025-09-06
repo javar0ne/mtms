@@ -5,9 +5,6 @@ import com.dg.mtms.client.client.MTMSClient;
 import java.util.Scanner;
 
 public class ProcessTrackPackageOperation extends ProcessOperation {
-    public ProcessTrackPackageOperation(MTMSClient client) {
-        super(client);
-    }
 
     @Override
     public void process(Scanner scanner) {
@@ -15,6 +12,6 @@ public class ProcessTrackPackageOperation extends ProcessOperation {
         System.out.println("Inserisci il numero di spedizione: ");
         String trackingNumber = scanner.nextLine();
 
-        client.trackPackage(trackingNumber);
+        MTMSClient.getInstance().trackPackage(trackingNumber);
     }
 }
