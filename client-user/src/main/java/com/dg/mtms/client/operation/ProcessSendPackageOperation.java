@@ -1,8 +1,8 @@
 package com.dg.mtms.client.operation;
 
 import com.dg.mtms.client.client.MTMSClient;
-import com.dg.mtms.common.Dimension;
-import com.dg.mtms.common.SendMailPackageRequest;
+import com.dg.mtms.common.model.Dimension;
+import com.dg.mtms.common.request.SendMailPackageRequest;
 
 import java.util.Scanner;
 

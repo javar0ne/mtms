@@ -1,7 +1,7 @@
 package com.dg.mtms.client.operation;
 
 import com.dg.mtms.client.client.MTMSClient;
-import com.dg.mtms.common.Dimension;
+import com.dg.mtms.common.model.Dimension;
 
 import java.util.Scanner;
 

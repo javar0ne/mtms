@@ -1,6 +1,6 @@
 package com.dg.mtms.server.model;
 
-import com.dg.mtms.common.PackageStatus;
+import com.dg.mtms.common.model.PackageStatus;
 
 public class MailPackage {
     private Long id;

@@ -11,7 +11,7 @@ import com.dg.mtms.server.model.response.HttpResponse;
 import com.dg.mtms.server.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.dg.mtms.common.UserCreateRequest;
+import com.dg.mtms.common.request.UserCreateRequest;
 
 @Controller(basePath = "/v1/user")
 public class UserController extends Singleton<UserController> {

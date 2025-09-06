@@ -1,7 +1,7 @@
 package com.dg.mtms.client.operation;
 
 import com.dg.mtms.client.client.MTMSClient;
-import com.dg.mtms.common.UserCreateRequest;
+import com.dg.mtms.common.request.UserCreateRequest;
 
 import java.util.Scanner;
 

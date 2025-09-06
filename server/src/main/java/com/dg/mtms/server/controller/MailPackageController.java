@@ -1,6 +1,6 @@
 package com.dg.mtms.server.controller;
 
-import com.dg.mtms.common.SendMailPackageRequest;
+import com.dg.mtms.common.request.SendMailPackageRequest;
 import com.dg.mtms.server.model.Singleton;
 import com.dg.mtms.server.annotation.Controller;
 import com.dg.mtms.server.annotation.Request;
@@ -14,7 +14,7 @@ import com.dg.mtms.server.model.response.HttpResponse;
 import com.dg.mtms.server.service.MailPackageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.dg.mtms.common.UpdatePackageStatusRequest;
+import com.dg.mtms.common.request.UpdatePackageStatusRequest;
 import com.dg.mtms.common.response.PackageFeeResponse;
 
 import java.util.List;

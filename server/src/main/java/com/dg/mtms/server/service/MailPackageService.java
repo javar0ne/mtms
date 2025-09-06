@@ -1,6 +1,6 @@
 package com.dg.mtms.server.service;
 
-import com.dg.mtms.common.SendMailPackageRequest;
+import com.dg.mtms.common.request.SendMailPackageRequest;
 import com.dg.mtms.server.model.Singleton;
 import com.dg.mtms.server.exception.EntityNotFoundException;
 import com.dg.mtms.server.mapper.MailPackageMapper;

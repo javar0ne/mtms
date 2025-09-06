@@ -4,7 +4,7 @@ import com.dg.mtms.server.model.Singleton;
 import com.dg.mtms.server.db.DB;
 import com.dg.mtms.server.model.Dimension;
 import com.dg.mtms.server.model.MailPackage;
-import com.dg.mtms.common.PackageStatus;
+import com.dg.mtms.common.model.PackageStatus;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

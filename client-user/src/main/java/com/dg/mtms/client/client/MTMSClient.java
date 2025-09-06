@@ -1,10 +1,10 @@
 package com.dg.mtms.client.client;
 
 import com.dg.mtms.client.client.request.HttpRequest;
-import com.dg.mtms.common.SendMailPackageRequest;
+import com.dg.mtms.common.request.SendMailPackageRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.dg.mtms.common.Dimension;
-import com.dg.mtms.common.UserCreateRequest;
+import com.dg.mtms.common.model.Dimension;
+import com.dg.mtms.common.request.UserCreateRequest;
 
 import java.io.IOException;
 import java.io.PrintWriter;

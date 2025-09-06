@@ -1,6 +1,6 @@
 package com.dg.mtms.server.mapper;
 
-import com.dg.mtms.common.SendMailPackageRequest;
+import com.dg.mtms.common.request.SendMailPackageRequest;
 import com.dg.mtms.server.model.MailPackage;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

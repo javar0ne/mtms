@@ -1,7 +1,7 @@
 package com.dg.mtms.common.response;
 
 
-import com.dg.mtms.common.PackageStatus;
+import com.dg.mtms.common.model.PackageStatus;
 
 public record SendMailPackageResponse (
     Long id,

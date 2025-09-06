@@ -1,4 +1,4 @@
-package com.dg.mtms.common;
+package com.dg.mtms.common.request;
 
 public record UserCreateRequest(String username) {
     @Override
