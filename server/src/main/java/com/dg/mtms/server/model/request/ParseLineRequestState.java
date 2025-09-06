@@ -5,7 +5,7 @@ import com.dg.mtms.common.http.HttpMethod;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class ParseLineRequestState implements RequestState{
+public class ParseLineRequestState implements RequestState {
     @Override
     public RequestState handle(BufferedReader bufferedReader, HttpRequest httpRequest) {
         try {

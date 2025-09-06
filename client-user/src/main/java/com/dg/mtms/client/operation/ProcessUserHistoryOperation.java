@@ -1,7 +1,11 @@
 package com.dg.mtms.client.operation;
 
 import com.dg.mtms.client.client.MTMSClient;
+import com.dg.mtms.common.response.HttpResponse;
+import com.dg.mtms.common.response.SendMailPackageResponse;
+import com.dg.mtms.common.response.StatusCode;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class ProcessUserHistoryOperation extends ProcessOperation {
@@ -12,6 +16,20 @@ public class ProcessUserHistoryOperation extends ProcessOperation {
         System.out.print("Inserisci l'username: ");
         String username = scanner.nextLine();
 
-        MTMSClient.getInstance().getUserHistory(username);
+        HttpResponse response = MTMSClient.getInstance().getUserHistory(username);
+
+        if(!StatusCode.OK.equals(response.getStatusCode())) {
+            System.out.println("Errore nel recupero dello storico.");
+            return;
+        }
+
+        List<SendMailPackageResponse> packages = response.getParsedListBody(SendMailPackageResponse.class);
+        for(SendMailPackageResponse packageResponse : packages) {
+            System.out.println("Numero di spedizione: " + packageResponse.id());
+            System.out.println("Destinatario: " + packageResponse.receiver());
+            System.out.println("Indirizzo: " + packageResponse.address());
+            System.out.println("Stato: " + packageResponse.status());
+            System.out.println("--------------------------------");
+        }
     }
 }

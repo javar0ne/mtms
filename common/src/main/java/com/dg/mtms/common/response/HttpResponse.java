@@ -1,20 +1,22 @@
-package com.dg.mtms.server.model.response;
+package com.dg.mtms.common.response;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class HttpResponse {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private String version;
-    private StatusCode code;
+    private StatusCode statusCode;
     private HashMap<String, String> headers = new HashMap<>();
     private String body;
 
     public static HttpResponse internalServerError() {
         HttpResponse response = new HttpResponse();
-        response.setCode(StatusCode.INTERNAL_SERVER_ERROR);
+        response.setStatusCode(StatusCode.INTERNAL_SERVER_ERROR);
         response.setVersion("HTTP/1.1");
         response.getHeaders().put("Content-Length", "0");
         response.getHeaders().put("Connection", "close");
@@ -23,7 +25,7 @@ public class HttpResponse {
 
     public static HttpResponse notFound() {
         HttpResponse response = new HttpResponse();
-        response.setCode(StatusCode.NOT_FOUND);
+        response.setStatusCode(StatusCode.NOT_FOUND);
         response.setVersion("HTTP/1.1");
         response.getHeaders().put("Content-Length", "0");
         response.getHeaders().put("Connection", "close");
@@ -32,7 +34,7 @@ public class HttpResponse {
 
     public static HttpResponse noContent() {
         HttpResponse response = new HttpResponse();
-        response.setCode(StatusCode.NO_CONTENT);
+        response.setStatusCode(StatusCode.NO_CONTENT);
         response.setVersion("HTTP/1.1");
         response.getHeaders().put("Connection", "close");
         response.getHeaders().put("Content-Length", "0");
@@ -42,7 +44,7 @@ public class HttpResponse {
 
     public static <T> HttpResponse ok(T body) {
         HttpResponse response = new HttpResponse();
-        response.setCode(StatusCode.OK);
+        response.setStatusCode(StatusCode.OK);
         response.setVersion("HTTP/1.1");
         response.getHeaders().put("Connection", "close");
 
@@ -69,12 +71,12 @@ public class HttpResponse {
         this.version = version;
     }
 
-    public StatusCode getCode() {
-        return code;
+    public StatusCode getStatusCode() {
+        return statusCode;
     }
 
-    public void setCode(StatusCode code) {
-        this.code = code;
+    public void setStatusCode(StatusCode statusCode) {
+        this.statusCode = statusCode;
     }
 
     public HashMap<String, String> getHeaders() {
@@ -89,13 +91,29 @@ public class HttpResponse {
         return body;
     }
 
+    public <T> T getParsedBody(Class<T> type) {
+        try {
+            return objectMapper.readValue(getBody(), type);
+        } catch (JsonProcessingException e) {
+            return null;
+        }
+    }
+
+    public <T> List<T> getParsedListBody(Class<T> type) {
+        try {
+            return objectMapper.readValue(getBody(), new TypeReference<List<T>>() {});
+        } catch (JsonProcessingException e) {
+            return null;
+        }
+    }
+
     public void setBody(String body) {
         this.body = body;
     }
 
     @Override
     public String toString() {
-        String result = version + " " + code + "\r\n";
+        String result = version + " " + statusCode + "\r\n";
         for (String key : headers.keySet()) {
             result += key + ": " + headers.get(key) + "\r\n";
         }

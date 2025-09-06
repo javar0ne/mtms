@@ -7,7 +7,7 @@ import com.dg.mtms.server.annotation.RequestBody;
 import com.dg.mtms.server.exception.UsernameAlreadyExistsException;
 import com.dg.mtms.server.mapper.UserMapper;
 import com.dg.mtms.server.model.User;
-import com.dg.mtms.server.model.response.HttpResponse;
+import com.dg.mtms.common.response.HttpResponse;
 import com.dg.mtms.server.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

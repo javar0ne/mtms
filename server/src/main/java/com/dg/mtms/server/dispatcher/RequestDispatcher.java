@@ -8,7 +8,7 @@ import com.dg.mtms.server.model.request.HttpRequest;
 import com.dg.mtms.server.model.request.injector.RequestBodyInjector;
 import com.dg.mtms.server.model.request.injector.RequestInjector;
 import com.dg.mtms.server.model.request.injector.RequestParamInjector;
-import com.dg.mtms.server.model.response.HttpResponse;
+import com.dg.mtms.common.response.HttpResponse;
 import com.dg.mtms.server.util.HttpParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;

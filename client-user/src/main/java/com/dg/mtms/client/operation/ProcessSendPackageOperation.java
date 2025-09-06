@@ -3,6 +3,9 @@ package com.dg.mtms.client.operation;
 import com.dg.mtms.client.client.MTMSClient;
 import com.dg.mtms.common.model.Dimension;
 import com.dg.mtms.common.request.SendMailPackageRequest;
+import com.dg.mtms.common.response.HttpResponse;
+import com.dg.mtms.common.response.SendMailPackageResponse;
+import com.dg.mtms.common.response.StatusCode;
 
 import java.util.Scanner;
 
@@ -23,7 +26,7 @@ public class ProcessSendPackageOperation extends ProcessOperation {
         System.out.print("Inserisci l'username: ");
         String username = scanner.nextLine();
 
-        MTMSClient.getInstance().sendPackage(
+        HttpResponse response = MTMSClient.getInstance().sendPackage(
             new SendMailPackageRequest(
                 receiver,
                 address,
@@ -32,5 +35,13 @@ public class ProcessSendPackageOperation extends ProcessOperation {
                 username
             )
         );
+
+        if(!StatusCode.OK.equals(response.getStatusCode())) {
+            System.out.println("Errore nell'inserimento del pacco a sistema");
+            return;
+        }
+
+        System.out.println("Pacco inserito a sistema");
+        System.out.println("Numero di tracking: " + response.getParsedBody(SendMailPackageResponse.class).id());
     }
 }

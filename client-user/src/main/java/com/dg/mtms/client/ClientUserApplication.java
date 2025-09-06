@@ -13,7 +13,7 @@ public class ClientUserApplication {
         do {
             System.out.println("Benvenuto ad MTMS:");
             System.out.println(Operation.formatAsMenu());
-            System.out.println("Seleziona un'operazione: ");
+            System.out.print("Seleziona un'operazione: ");
             operationCode = Integer.parseInt(scanner.nextLine());
             if(Operation.isValid(operationCode)) {
                 ProcessOperation.getInstance(operationCode)

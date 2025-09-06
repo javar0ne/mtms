@@ -10,7 +10,7 @@ import com.dg.mtms.server.exception.EntityNotFoundException;
 import com.dg.mtms.server.mapper.MailPackageMapper;
 import com.dg.mtms.server.model.Dimension;
 import com.dg.mtms.server.model.MailPackage;
-import com.dg.mtms.server.model.response.HttpResponse;
+import com.dg.mtms.common.response.HttpResponse;
 import com.dg.mtms.server.service.MailPackageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

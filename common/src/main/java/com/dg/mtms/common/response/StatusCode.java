@@ -1,5 +1,7 @@
 package com.dg.mtms.common.response;
 
+import java.util.Arrays;
+
 public enum StatusCode {
     OK(200, "OK"),
     NO_CONTENT(204, "No Content"),
@@ -21,6 +23,13 @@ public enum StatusCode {
 
     public String getMessage() {
         return message;
+    }
+
+    public static StatusCode valueOf(int code) {
+        return Arrays.stream(values())
+            .filter(statusCode -> statusCode.getCode() == code)
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Invalid status code: " + code));
     }
 
     public String toString() {
