@@ -3,8 +3,7 @@ package com.dg.mtms.server.model.request;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import static com.dg.mtms.server.enums.HttpMethod.GET;
-import static com.dg.mtms.server.enums.HttpMethod.POST;
+import static com.dg.mtms.common.http.HttpMethod.GET;
 
 public class ParseHeaderRequestState implements RequestState{
     @Override

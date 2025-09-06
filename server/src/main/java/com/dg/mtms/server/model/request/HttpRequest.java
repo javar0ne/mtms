@@ -1,6 +1,6 @@
 package com.dg.mtms.server.model.request;
 
-import com.dg.mtms.server.enums.HttpMethod;
+import com.dg.mtms.common.http.HttpMethod;
 
 import java.util.HashMap;
 

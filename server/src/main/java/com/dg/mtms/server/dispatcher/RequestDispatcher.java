@@ -88,6 +88,7 @@ public class RequestDispatcher implements Runnable {
                 Singleton.getInstance(controllers.get(controllerBasePath.get())),
                 arrayParams
             );
+
             socketWriter.write(response.toString());
         } catch (Exception e) {
             logger.error("Error while dispatching request!", e);

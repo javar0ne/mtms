@@ -1,4 +1,4 @@
-package com.dg.mtms.server.enums;
+package com.dg.mtms.common.http;
 
 import java.util.Arrays;
 
