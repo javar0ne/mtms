@@ -31,6 +31,7 @@ public abstract class HttpClient {
             request.addHeader("Content-Length", String.valueOf(body.length()));
             request.setBody(body);
             socketWriter.write(request.toString());
+            socketWriter.flush();
             return readResponse(socket);
         } catch (IOException e) {
             throw new RuntimeException(e);
