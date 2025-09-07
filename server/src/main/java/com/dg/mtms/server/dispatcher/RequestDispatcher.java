@@ -51,6 +51,7 @@ public class RequestDispatcher implements Runnable {
                 .findFirst();
             if(controllerBasePath.isEmpty()) {
                 socketWriter.write(HttpResponse.notFound().toString());
+                socketWriter.flush();
                 throw new IllegalStateException("No controller found for " + httpRequest.getEndpoint());
             }
 
@@ -69,6 +70,7 @@ public class RequestDispatcher implements Runnable {
 
             if(matchedMethod.isEmpty()) {
                 socketWriter.write(HttpResponse.notFound().toString());
+                socketWriter.flush();
                 throw new IllegalStateException("Endpoint not found");
             }
 
@@ -90,6 +92,7 @@ public class RequestDispatcher implements Runnable {
             );
 
             socketWriter.write(response.toString());
+            socketWriter.flush();
         } catch (Exception e) {
             logger.error("Error while dispatching request!", e);
         } finally {

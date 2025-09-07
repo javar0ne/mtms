@@ -24,6 +24,12 @@ public class ProcessUserHistoryOperation extends ProcessOperation {
         }
 
         List<SendMailPackageResponse> packages = response.getParsedListBody(SendMailPackageResponse.class);
+
+        if(packages == null || packages.isEmpty()) {
+            System.out.println("Nessuna spedizione trovata per l'utente " + username);
+        }
+
+        System.out.println("--------------------------------");
         for(SendMailPackageResponse packageResponse : packages) {
             System.out.println("Numero di spedizione: " + packageResponse.id());
             System.out.println("Destinatario: " + packageResponse.receiver());

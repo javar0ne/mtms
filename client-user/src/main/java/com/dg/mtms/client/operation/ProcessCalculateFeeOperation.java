@@ -15,18 +15,21 @@ public class ProcessCalculateFeeOperation extends ProcessOperation {
         System.out.println("Calcola tariffa.");
         System.out.print("Inserisci le dimensioni (l x w x h): ");
         String[] size = scanner.nextLine().split("x");
+        System.out.print("Inserisci il peso: ");
+        String weight = scanner.nextLine();
 
         HttpResponse response = MTMSClient.getInstance().calculateFee(
             new Dimension(
                 Double.parseDouble(size[0]),
                 Double.parseDouble(size[1]),
                 Double.parseDouble(size[2])
-            )
+            ),
+            Double.parseDouble(weight)
         );
 
         if(!StatusCode.OK.equals(response.getStatusCode())) return;
 
         PackageFeeResponse content = response.getParsedBody(PackageFeeResponse.class);
-        System.out.println("La tariffa per il la spedizione del pacco e': " + content.fee());
+        System.out.println("La tariffa per la spedizione del pacco e': " + content.fee());
     }
 }

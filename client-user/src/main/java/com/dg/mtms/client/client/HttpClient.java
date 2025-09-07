@@ -49,6 +49,7 @@ public abstract class HttpClient {
             request.setHost(host);
             request.setVersion("HTTP/1.1");
             socketWriter.write(request.toString());
+            socketWriter.flush();
             return readResponse(socket);
         } catch (IOException e) {
             throw new RuntimeException(e);

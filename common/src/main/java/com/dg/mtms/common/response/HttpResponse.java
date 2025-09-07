@@ -101,7 +101,7 @@ public class HttpResponse {
 
     public <T> List<T> getParsedListBody(Class<T> type) {
         try {
-            return objectMapper.readValue(getBody(), new TypeReference<List<T>>() {});
+            return objectMapper.readValue(getBody(), objectMapper.getTypeFactory().constructCollectionType(List.class, type));
         } catch (JsonProcessingException e) {
             return null;
         }

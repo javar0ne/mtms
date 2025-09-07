@@ -10,7 +10,7 @@ public class MTMSClient extends HttpClient {
     private static final String CREATE_USER_PATH = "/v1/user";
     private static final String MAIL_SEND_PACKAGE_PATH = "/v1/mail/send-package";
     private static final String MAIL_TRACK_PACKAGE_PATH = "/v1/mail/track-package?packageNumber=%s";
-    private static final String MAIL_CALCULATE_FEE_PATH = "/v1/mail/calculate-fee?length=%f&width=%f&height=%f";
+    private static final String MAIL_CALCULATE_FEE_PATH = "/v1/mail/calculate-fee?length=%f&width=%f&height=%f&weight=%f";
     private static final String MAIL_USER_HISTORY_PATH = "/v1/mail/user?username=%s";
 
     private static final MTMSClient INSTANCE = new MTMSClient();
@@ -34,14 +34,15 @@ public class MTMSClient extends HttpClient {
         return executeGetRequest(BASE_URL, String.format(MAIL_TRACK_PACKAGE_PATH, packageNumber));
     }
 
-    public HttpResponse calculateFee(Dimension dimension) {
+    public HttpResponse calculateFee(Dimension dimension, Double weight) {
         return executeGetRequest(
             BASE_URL,
             String.format(
                 MAIL_CALCULATE_FEE_PATH,
                 dimension.getLength(),
                 dimension.getWidth(),
-                dimension.getHeight()
+                dimension.getHeight(),
+                weight
             )
         );
     }

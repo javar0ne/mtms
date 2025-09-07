@@ -71,7 +71,12 @@ public class MailPackageController extends Singleton<MailPackageController> {
     }
 
     @Request(endpoint = "/calculate-fee")
-    public HttpResponse calculateFee(@RequestParam(value = "length") Double length, @RequestParam(value = "width") Double width, @RequestParam(value = "height") Double height, @RequestParam(value = "weight") Double weight) {
+    public HttpResponse calculateFee(
+        @RequestParam(value = "length") Double length,
+        @RequestParam(value = "width") Double width,
+        @RequestParam(value = "height") Double height,
+        @RequestParam(value = "weight") Double weight
+    ) {
         logger.info("calculating fee for package with weight: {} and dimension: {} - {} - {}", weight, length, width, height);
         try {
             Dimension dimension = new Dimension(length, width, height);
