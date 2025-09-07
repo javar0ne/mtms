@@ -1,12 +1,10 @@
-package-all:
+package:
 	mvn clean package
 
-server:
-	cd server/ && mvn clean package
+server: package
 	clear
 	java -jar server/target/server-0.0.1-SNAPSHOT-shaded.jar
 
-client-user:
-	cd client-user/ && mvn clean package
+client-user: package
 	clear
 	java -jar client-user/target/client-user-0.0.1-SNAPSHOT-shaded.jar
