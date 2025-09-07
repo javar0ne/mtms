@@ -1,9 +1,9 @@
-package com.dg.mtms.client.client;
+package com.dg.mtms.client.manager.client;
 
-import com.dg.mtms.client.client.request.HttpRequest;
-import com.dg.mtms.client.util.DoneResponseState;
-import com.dg.mtms.client.util.ParseLineResponseState;
-import com.dg.mtms.client.util.ResponseState;
+import com.dg.mtms.client.manager.client.request.HttpRequest;
+import com.dg.mtms.client.manager.util.DoneResponseState;
+import com.dg.mtms.client.manager.util.ParseLineResponseState;
+import com.dg.mtms.client.manager.util.ResponseState;
 import com.dg.mtms.common.http.HttpMethod;
 import com.dg.mtms.common.response.HttpResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,37 +16,20 @@ public abstract class HttpClient {
     private static final Logger logger = Logger.getLogger(HttpClient.class.getName());
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    protected HttpResponse executePostRequest(String host, String path, Object content) {
+    protected HttpResponse executePatchRequest(String host, String path, Object content) {
         try (
             Socket socket = new Socket("127.0.0.1", 8080);
             PrintWriter socketWriter = new PrintWriter(socket.getOutputStream(), true)
         ) {
             String body = objectMapper.writeValueAsString(content);
             HttpRequest request = new HttpRequest();
-            request.setMethod(HttpMethod.POST.name());
+            request.setMethod(HttpMethod.PATCH.name());
             request.setPath(path);
             request.setHost(host);
             request.setVersion("HTTP/1.1");
             request.addHeader("Content-Type", "application/json");
             request.addHeader("Content-Length", String.valueOf(body.length()));
             request.setBody(body);
-            socketWriter.write(request.toString());
-            return readResponse(socket);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    protected HttpResponse executeGetRequest(String host, String path) {
-        try (
-            Socket socket = new Socket("127.0.0.1", 8080);
-            PrintWriter socketWriter = new PrintWriter(socket.getOutputStream(), false)
-        ) {
-            HttpRequest request = new HttpRequest();
-            request.setMethod(HttpMethod.GET.name());
-            request.setPath(path);
-            request.setHost(host);
-            request.setVersion("HTTP/1.1");
             socketWriter.write(request.toString());
             socketWriter.flush();
             return readResponse(socket);

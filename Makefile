@@ -8,3 +8,7 @@ server: package
 client-user: package
 	clear
 	java -jar client-user/target/client-user-0.0.1-SNAPSHOT-shaded.jar
+
+client-manager: package
+	clear
+	java -jar client-manager/target/client-manager-0.0.1-SNAPSHOT-shaded.jar

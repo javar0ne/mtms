@@ -16,6 +16,7 @@
         <module>client-user</module>
         <module>server</module>
         <module>common</module>
+        <module>client-manager</module>
     </modules>
 
     <properties>
