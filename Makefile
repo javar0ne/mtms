@@ -1,12 +1,12 @@
-drop-and-create-db: drop-db create-db
-
-drop-db:
-	rm -f src/main/resources/db/mtms.db
-create-db:
-	mvn liquibase:update
-
-run:
+package-all:
 	mvn clean package
-	java -jar server/target/server-0.0.1-SNAPSHOT-shaded.jar &
+
+server:
+	cd server/ && mvn clean package
+	clear
+	java -jar server/target/server-0.0.1-SNAPSHOT-shaded.jar
+
+client-user:
+	cd client-user/ && mvn clean package
 	clear
 	java -jar client-user/target/client-user-0.0.1-SNAPSHOT-shaded.jar
