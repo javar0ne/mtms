@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DB {
     // TODO: handle db url changes
-    private static final String DB_URL = "jdbc:sqlite:server/src/main/resources/db/mtms.db";
+    private static final String DB_URL = "jdbc:sqlite:mtms.db";
 
     private DB() {}
 

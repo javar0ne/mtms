@@ -11,19 +11,13 @@ import com.dg.mtms.server.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.*;
+import java.nio.file.*;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Stream;
 
 public class ServerApplication {
     private static final Logger logger = LoggerFactory.getLogger(ServerApplication.class);
@@ -48,44 +42,57 @@ public class ServerApplication {
         MailPackageController.createInstance(MailPackageService.getInstance());
     }
 
-    private static void validateAndPopulateControllers(String packageName) {
-        try {
-            String path = packageName.replace(".","/");
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            URL resource = classLoader.getResource(path);
-            File directory;
-            File[] files;
+    private static void validateAndPopulateControllers(String packageName) throws IOException, URISyntaxException {
+        String packagePath = packageName.replace('.', '/');
+        URL resource = Thread.currentThread().getContextClassLoader().getResource(packagePath);
+        Path packageDir;
 
-            if(resource == null) return;
-
-            if(resource.toURI().getScheme().equals("jar")) {
-                FileSystem fileSystem = FileSystems.newFileSystem(resource.toURI(), Collections.emptyMap());
-                directory = fileSystem.getPath(path).toFile();
-            } else {
-                directory = new File(resource.toURI());
-            }
-            files = directory.listFiles();
-
-            if(files == null) return;
-
-            for (File file : files) {
-                if (file.getName().endsWith(".class")) {
-                    String className = packageName + "." + file.getName().replace(".class", "");
-                    Class<?> clazz = Class.forName(className);
-                    if (clazz.isAnnotationPresent(Controller.class)) {
-                        String basePath = clazz.getDeclaredAnnotation(Controller.class).basePath();
-                        if(controllers.containsKey(basePath)) {
-                            throw new RuntimeException(basePath + " has been declared twice!");
-                        }
-                        controllers.put(basePath, clazz);
-                    }
-                } else {
-                    validateAndPopulateControllers(packageName + "." + file.getName());
-                }
-            }
-        } catch (URISyntaxException | ClassNotFoundException | IOException e) {
-            logger.error("Error while validating and populating controllers!", e);
+        if (resource == null) {
+            return;
         }
+
+        URI uri = resource.toURI();
+
+        if (uri.getScheme().equals("jar")) {
+            // Running from JAR
+            try (FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
+                packageDir = fileSystem.getPath(packagePath);
+                findClassesInPath(packageDir, packageName);
+            }
+        } else {
+            // Running from file system
+            packageDir = Paths.get(uri);
+            findClassesInPath(packageDir, packageName);
+        }
+    }
+
+    private static void findClassesInPath(Path packageDir, String packageName) throws IOException {
+        try (Stream<Path> files = Files.walk(packageDir)) {
+            files.forEach(path -> {
+                if(path.toString().endsWith(".class")) {
+                    String className = getClassName(path, packageDir, packageName);
+                    try {
+                        Class<?> clazz = Class.forName(className);
+                        if (clazz.isAnnotationPresent(Controller.class)) {
+                            String basePath = clazz.getDeclaredAnnotation(Controller.class).basePath();
+                            if(controllers.containsKey(basePath)) {
+                                throw new RuntimeException(basePath + " has been declared twice!");
+                            }
+                            controllers.put(basePath, clazz);
+                        }
+                    } catch (ClassNotFoundException _) {}
+                }
+            });
+        }
+    }
+
+    private static String getClassName(Path classFile, Path packageDir, String packageName) {
+        Path relativePath = packageDir.relativize(classFile);
+        String className = relativePath.toString()
+            .replace('/', '.')
+            .replace('\\', '.')
+            .replace(".class", "");
+        return packageName + "." + className;
     }
 
     private static void runServer() {
